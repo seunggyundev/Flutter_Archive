@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
     setState(() {
-      _data = cdata?.text ?? 'got null...';
+      _data = cdata?.text ?? 'got null';
     });
   }
 
