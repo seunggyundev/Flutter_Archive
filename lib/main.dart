@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/src/home.dart';
+import 'package:archive/src/provider/count_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:web_scraper/web_scraper.dart';
 
 import 'package:http/http.dart' as http;
@@ -26,21 +29,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ChangeNotifierProvider(
+        create: (BuildContext context) => CountProvider(),  //child 하위에 있는 모든 위젯들은 CountProvider에 접근가능하게 됨, ChangeNotifierProvider이거는 싱글 프로바이더임 따라서 하나만 등록가능
+      child: Home(),),
     );
   }
 }
+
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -131,8 +129,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future loadEvs() async {
 
+
+
+
+    var encodeKey = convert.utf8.encode('%2FbqbcuFciYhRZ%2BH7rTIX%2FERzQooeH891iidpEvI%2BjeZxiHj5Hlx69SG0Cs%2B0MsFYJdPt0QGqwGU56e6NQYwDSQ%3D%3D');
+
+    print('encodeKey : ${encodeKey}');
+    var decodeKey = convert.utf8.decode(encodeKey);
+    print('decodeKey ;${decodeKey}');
+
+    var keyData = encodeKey;
     String baseUrl =
-        "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcInduTrade?LAWD_CD=11110&DEAL_YMD=202206&serviceKey=%2FbqbcuFciYhRZ%2BH7rTIX%2FERzQooeH891iidpEvI%2BjeZxiHj5Hlx69SG0Cs%2B0MsFYJdPt0QGqwGU56e6NQYwDSQ%3D%3D";
+        "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcInduTrade?LAWD_CD=11110&DEAL_YMD=202206&serviceKey=${keyData}";
+
+    print('Uri.parse(baseUrl) : ${Uri.parse(baseUrl,)}');
+
     final response = await http.get(Uri.parse(baseUrl));
 
     // 정상적으로 데이터를 불러왔다면
